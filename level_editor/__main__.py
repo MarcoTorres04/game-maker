@@ -7,6 +7,7 @@ class MainLoop:
     def __init__(self):
         self.display_surface = pygame.display.set_mode(
             (settings.WINDOW_WIDTH, settings.WINDOW_HEIGHT))
+        pygame.display.set_caption(settings.WINDOW_TITLE)
         self.clock = pygame.time.Clock()
         self.editor = editor.Editor()
 

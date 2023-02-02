@@ -1,0 +1,14 @@
+{
+    "fire": {
+        "effect": "damage"
+    },
+    "grass": {
+        "effect": "solid"
+    },
+    "ground": {
+        "effect": "solid"
+    },
+    "watter": {
+        "effect": "float"
+    }
+}

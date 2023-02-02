@@ -48,6 +48,10 @@ class Menu:
         self.highlight_selected()
 
     def highlight_selected(self):
+        menu = settings.MENU_ITEMS[self.menu_index]
+        images = self.menu_images.menu_images[menu]
+        self.selected_item = 0 if len(
+            images) <= self.selected_item else self.selected_item
         button: Button = list(self.buttons)[self.selected_item]
         rect = button.rect
         x = rect.left
@@ -66,9 +70,11 @@ class Menu:
         if not get_pressed()[0]:
             return
         mouse = get_pos()
+        menu = settings.MENU_ITEMS[self.menu_index]
         for idx, button in enumerate(self.buttons):
             if button.rect.collidepoint(mouse):
-                self.selected_item = idx
+                self.selected_item = idx if idx <= len(
+                    self.menu_images.menu_images[menu]) - 1 else self.selected_item
                 return
 
     def update(self, event: pygame.event.Event):

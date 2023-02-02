@@ -2,6 +2,7 @@ import sys
 from pathlib import Path
 
 # Screen Settings
+WINDOW_TITLE = "Game Maker"
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720  # 20
 
@@ -11,12 +12,12 @@ TILE_SIZE = 64
 SCREEN_FILL = 'white'
 
 # Menu
-MENU_BG = 'SIENNA'
+MENU_BG = 'SILVER'
 MENU_COLS = 2
 MENU_ROWS = 3
 MENU_MARGIN = 1
 MENU_SPACING = 16
-MENU_ITEMS = ["terrain", "player"]
+MENU_ITEMS = ["terrain", "player", "objects"]
 MENU_HL_COLOR = 'gold'
 MENU_HL_ALPHA = 100
 
