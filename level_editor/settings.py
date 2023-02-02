@@ -20,6 +20,7 @@ MENU_SPACING = 16
 MENU_ITEMS = ["terrain", "player", "objects"]
 MENU_HL_COLOR = 'gold'
 MENU_HL_ALPHA = 100
+SCROLL_SENS = 1
 
 # Tiles Creator
 OVERRIDE_CELL = True

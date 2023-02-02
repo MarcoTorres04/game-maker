@@ -39,7 +39,7 @@ class TileCreator:
         up_cell = self.canvas_tiles[up_loc]
         up_menu, up_name, up_place = up_cell.split('-')
         menu, name, _ = cell_name.split('-')
-        if (up_menu != menu) or (up_name != name) or (up_place == 'main'):
+        if (up_menu != menu) or (up_name != name):
             self.canvas_tiles[current_cell] = cell_name
             if up_place == 'bottom':
                 self.canvas_tiles[up_loc] = f'{up_menu}-{up_name}-middle'
@@ -65,8 +65,7 @@ class TileCreator:
         menu, name, place = cell_name.split('-')
         if (down_menu != menu) or (down_name != name):
             self.canvas_tiles[current_cell] = cell_name
-            down_place = 'top' if down_place != 'main' else 'main'
-            self.canvas_tiles[down_loc] = f'{down_menu}-{down_name}-{down_place}'
+            self.canvas_tiles[down_loc] = f'{down_menu}-{down_name}-top'
             return
         if down_place == 'top':
             self.canvas_tiles[down_loc] = f'{down_menu}-{down_name}-middle'

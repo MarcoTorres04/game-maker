@@ -19,7 +19,7 @@ class MenuImages:
                     name, place = image_name
                 else:
                     name = image_name[0]
-                    place = 'main'
+                    place = 'top'
                 if not name in self.menu_images[menu]:
                     self.menu_images[menu][name] = {}
                 self.menu_images[menu][name][place] = TileSurface(
@@ -31,10 +31,7 @@ class MenuImages:
         images: dict = self.menu_images[menu]
         images_list = list()
         for value in images.values():
-            if "main" in value:
-                images_list.append(value['main'])
-                continue
-            elif 'top' in value:
+            if 'top' in value:
                 images_list.append(value['top'])
             elif 'middle' in value:
                 images_list.append(value['middle'])

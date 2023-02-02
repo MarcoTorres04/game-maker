@@ -33,6 +33,9 @@ class Editor:
         if event.type == pygame.MOUSEBUTTONDOWN:
             self.menu.click(event)
 
+        elif event.type == pygame.MOUSEWHEEL:
+            self.menu.scroll(event)
+
         self.display_surface.fill(settings.SCREEN_FILL)
         self.pan_tool.update(event)
 
@@ -55,4 +58,11 @@ class Editor:
                 _text, True, settings.DEBUG_COLOR, settings.DEBUG_BG)
             rect = text.get_rect()
             rect.center = settings.WINDOW_WIDTH - settings.TILE_SIZE, 10
+            self.display_surface.blit(text, rect)
+
+            _text = str(self.menu.scroll_index)
+            text = self.font.render(
+                f"Scroll Index: {_text}", True, settings.DEBUG_COLOR, settings.DEBUG_BG)
+            rect = text.get_rect()
+            rect.center = settings.WINDOW_WIDTH - settings.TILE_SIZE, 30
             self.display_surface.blit(text, rect)

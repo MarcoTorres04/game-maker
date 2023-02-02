@@ -9,11 +9,17 @@ from .button import Button
 class Menu:
     def __init__(self):
         self.display_surface = pygame.display.get_surface()
+        # Buttons
         self.create_menu_space()
         self.create_buttons()
+        # Menu Selection
         self.menu_index = 0
         self.menu_images = MenuImages()
         self.selected_item = 0
+        # Scroll
+        self.__last_scroll_index = 0
+        self.scroll_index_raw = 0
+        self.scroll_index = 0
 
     def create_menu_space(self):
         width = settings.MENU_COLS * settings.TILE_SIZE + (
@@ -43,11 +49,16 @@ class Menu:
     def draw_buttons(self):
         menu = settings.MENU_ITEMS[self.menu_index]
         images = self.menu_images(menu)
+        self.scroll_index = min(
+            self.scroll_index, len(images) - (len(images) % 2))
+        images = images[self.scroll_index:]
         self.buttons.update(images)
         self.buttons.draw(self.display_surface)
         self.highlight_selected()
 
     def highlight_selected(self):
+        if self.selected_item is None:
+            return
         menu = settings.MENU_ITEMS[self.menu_index]
         images = self.menu_images.menu_images[menu]
         self.selected_item = 0 if len(
@@ -76,6 +87,20 @@ class Menu:
                 self.selected_item = idx if idx <= len(
                     self.menu_images.menu_images[menu]) - 1 else self.selected_item
                 return
+
+    def scroll(self, event: pygame.event.Event):
+        if not self.rect.collidepoint(get_pos()):
+            return
+        val = settings.SCROLL_SENS if event.y == 1 else -settings.SCROLL_SENS
+        self.scroll_index_raw += val
+        self.scroll_index_raw = max(0, self.scroll_index_raw)
+        self.scroll_index = int(self.scroll_index_raw) + \
+            (int(self.scroll_index_raw) % 2)
+        if self.__last_scroll_index != self.scroll_index:
+            self.selected_item = None
+        #     self.selected_item += (self.__last_scroll_index -
+        #                            self.scroll_index)
+        # self.__last_scroll_index = self.scroll_index
 
     def update(self, event: pygame.event.Event):
         self.menu_surface.fill(settings.MENU_BG)
