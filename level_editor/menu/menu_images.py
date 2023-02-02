@@ -1,4 +1,5 @@
 import settings
+from menu.tile_surface import TileSurface
 from pygame.image import load
 
 
@@ -21,14 +22,15 @@ class MenuImages:
                     place = 'main'
                 if not name in self.menu_images[menu]:
                     self.menu_images[menu][name] = {}
-                self.menu_images[menu][name][place] = load(str(file))
+                self.menu_images[menu][name][place] = TileSurface(
+                    load(str(file)), f"{menu}-{name}-{place}")
 
     def __call__(self, menu: str, alt: bool = False) -> list:
         if not menu in self.menu_images:
             return []
         images: dict = self.menu_images[menu]
         images_list = list()
-        for key, value in images.items():
+        for value in images.values():
             if "main" in value:
                 images_list.append(value['main'])
                 continue

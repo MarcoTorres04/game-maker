@@ -1,1 +1,1 @@
-from .creator import TileCreator
+from .canvas import TileCreator

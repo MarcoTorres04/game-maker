@@ -39,10 +39,12 @@ class Editor:
         if settings.GRID:
             self.grid_tool.draw(self.pan_tool.center)
 
-        self.menu.update(event)
-
         if get_pressed()[0] and not self.menu.rect.collidepoint(get_pos()):
             self.tile_creator.run(self.pan_tool.center)
+
+        self.tile_creator.draw(self.pan_tool.center)
+
+        self.menu.update(event)
 
         if settings.DEBUG:
             pygame.draw.circle(self.display_surface, settings.DEBUG_COLOR,

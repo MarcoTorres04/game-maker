@@ -1,5 +1,6 @@
 import pygame
 import settings
+from menu.tile_surface import TileSurface
 
 
 class Button(pygame.sprite.Sprite):
@@ -13,11 +14,12 @@ class Button(pygame.sprite.Sprite):
         self._rect.topleft = (left, top)
         self.menu_loc = idx
 
-    def update(self, menu: list):
+    def update(self, menu: list[TileSurface]):
         if len(menu) <= self.menu_loc:
             self.image = self.image_surface
             self.rect = self._rect
             return
-        self.image: pygame.Surface = menu[self.menu_loc]
+        self.current_tile = menu[self.menu_loc]
+        self.image: pygame.Surface = self.current_tile.surface
         self.rect = self.image.get_rect()
         self.rect.topleft = (self._rect.left, self._rect.top)
