@@ -42,6 +42,10 @@ GRID_ALPHA = 50
 FONT = 'Arial'
 FONT_SIZE = 15
 
+# Screen Animiation
+ANIMATION_SPEED = 5
+ANIMATION_COLOR = (11, 14, 20)
+
 # Debug
 DEBUG = True
 DEBUG_COLOR = 'red'

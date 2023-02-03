@@ -14,7 +14,7 @@ class Button(pygame.sprite.Sprite):
         self._rect.topleft = (left, top)
         self.menu_loc = idx
 
-    def update(self, menu: list[TileSurface]):
+    def update(self, menu):  #list[TileSurface]):
         if len(menu) <= self.menu_loc:
             self.image = self.image_surface
             self.image.fill(settings.MENU_BG)

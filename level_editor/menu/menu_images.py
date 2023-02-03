@@ -13,7 +13,7 @@ class MenuImages:
             path = settings.TILES_PATH / menu
             if not menu in self.menu_images:
                 self.menu_images[menu]: dict = {}
-            for file in path.glob('*.png'):
+            for file in path.rglob('*.png'):
                 image_name = file.stem.split('-')
                 if len(image_name) > 1:
                     name, place = image_name
@@ -37,4 +37,6 @@ class MenuImages:
                 images_list.append(value['middle'])
             elif 'bottom' in value:
                 images_list.append(value['bottom'])
+            elif 'unique' in value:
+                images_list.append(value['unique'])
         return images_list
