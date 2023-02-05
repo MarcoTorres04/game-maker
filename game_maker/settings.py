@@ -9,7 +9,7 @@ WINDOW_HEIGHT = 720  # 20
 # Main Setup
 FPS = 60
 TILE_SIZE = 64
-SCREEN_FILL = 'white'
+SCREEN_FILL = 'SKYBLUE'
 
 # Menu
 MENU_BG = 'SILVER'
@@ -42,12 +42,15 @@ GRID_ALPHA = 50
 FONT = 'Arial'
 FONT_SIZE = 15
 
+# Player Stats
+PLAYER_SPEED = 2
+
 # Screen Animiation
 ANIMATION_SPEED = 5
 ANIMATION_COLOR = (11, 14, 20)
 
 # Debug
-DEBUG = True
+DEBUG = False
 DEBUG_COLOR = 'red'
 DEBUG_SIZE = 10
 DEBUG_BG = (255, 255, 255)

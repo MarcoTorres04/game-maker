@@ -7,14 +7,14 @@ from .button import Button
 
 
 class Menu:
-    def __init__(self):
+    def __init__(self, menu_images: MenuImages):
         self.display_surface = pygame.display.get_surface()
         # Buttons
         self.create_menu_space()
         self.create_buttons()
         # Menu Selection
         self.menu_index = 0
-        self.menu_images = MenuImages()
+        self.menu_images = menu_images
         self.selected_item = 0
         # Scroll
         self.__last_scroll_index = 0
@@ -100,7 +100,10 @@ class Menu:
         if self.__last_scroll_index != self.scroll_index:
             self.selected_item = None
 
-    def update(self, event: pygame.event.Event):
+    def draw(self):
         self.menu_surface.fill(settings.MENU_BG)
         self.display_surface.blit(self.menu_surface, self.rect.topleft)
         self.draw_buttons()
+
+    def collide(self, pos: tuple) -> bool:
+        return self.rect.collidepoint(pos)

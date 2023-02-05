@@ -9,8 +9,11 @@ class Ui:
         self.display_surface = pygame.display.get_surface()
         ui_path = settings.TILES_PATH / 'ui'
         # Play button
-        self.image = load(str(ui_path / 'play.png'))
-        self.rect = self.image.get_rect()
+        self.images = {
+            "edit": load(str(ui_path / 'play.png')),
+            "play": load(str(ui_path / 'pause.png'))
+        }
+        self.rect = self.images['edit'].get_rect()
         self.rect.topleft = 0, settings.WINDOW_HEIGHT - settings.TILE_SIZE
 
     def hover(self):
@@ -27,8 +30,11 @@ class Ui:
             return False
         return self.rect.collidepoint(get_pos())
 
-    def draw(self):
+    def draw(self, mode: str):
         hover_surface = self.hover()
         if not hover_surface is None:
             self.display_surface.blit(hover_surface, self.rect.topleft)
-        self.display_surface.blit(self.image, self.rect.topleft)
+        self.display_surface.blit(self.images[mode], self.rect.topleft)
+
+    def collide(self, pos: tuple) -> bool:
+        return self.rect.collidepoint(pos)

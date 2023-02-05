@@ -1,23 +1,25 @@
-import settings
-from pygame.mouse import get_pos
-from pygame.math import Vector2
 import menu
-import pygame
+import pygame as pg
+import settings
+from pygame.math import Vector2
+from pygame.mouse import get_pos, get_pressed
 
 
-class TileCreator:
+class Canvas:
     def __init__(self, editor_menu: menu.Menu):
-        self.display_surface = pygame.display.get_surface()
+        self.display_surface = pg.display.get_surface()
         self.menu = editor_menu
         self.canvas_tiles: dict[tuple, str] = {}
 
     def get_grid_cell(self, pan_center: Vector2):  # -> tuple[int, int]:
+        """Cell position in grid"""
         x, y = Vector2(get_pos()) - pan_center
         x_cell = int(x // settings.TILE_SIZE)
         y_cell = int(y // settings.TILE_SIZE)
         return x_cell, y_cell
 
     def get_neighbors_locs(self, cell_loc: tuple) -> dict:
+        """Cell locs in grid (N,S,E,W)"""
         return {
             "up": (cell_loc[0], cell_loc[1] - 1),
             "down": (cell_loc[0], cell_loc[1] + 1),
@@ -26,7 +28,8 @@ class TileCreator:
             "loc": cell_loc
         }
 
-    def add_tile(self, pan_center):
+    def add_tile(self, pan_center: Vector2):
+        """Add tile to canvas"""
         current_cell = self.get_grid_cell(pan_center)
         if not settings.OVERRIDE_CELL and current_cell in self.canvas_tiles:
             return
@@ -39,6 +42,15 @@ class TileCreator:
                 return
         neighbors = self.get_neighbors_locs(current_cell)
         self.review_locs(cell_name, neighbors)
+
+    def remove_tile(self, pan_center: Vector2):
+        """Remove tile"""
+        current_cell = self.get_grid_cell(pan_center)
+        if not current_cell in self.canvas_tiles:
+            return
+        self.canvas_tiles.pop(current_cell)
+        nbrs = self.get_neighbors_locs(current_cell)
+        self.review_nbrs(nbrs)
 
     def review_locs(self, cell_name: str, nbrs: dict):
         menu, name, place = cell_name.split('-')
@@ -90,6 +102,9 @@ class TileCreator:
         if not review_nbrs:
             return
 
+        self.review_nbrs(nbrs)
+
+    def review_nbrs(self, nbrs: dict):
         for nbr in list(nbrs.values())[:-1]:
             if not nbr in self.canvas_tiles:
                 continue
@@ -147,10 +162,14 @@ class TileCreator:
         for loc in locs:
             self.canvas_tiles.pop(loc)
 
-    def run(self, pan_center: Vector2):
-        self.add_tile(pan_center)
+    def update(self, pan_center: Vector2):
+        mouse = get_pressed()
+        if mouse[0]:
+            self.add_tile(pan_center)
+        elif mouse[2]:
+            self.remove_tile(pan_center)
 
-    def draw(self, offset: Vector2):
+    def draw(self, offset: Vector2, debug: bool):
         for loc, tile_path in self.canvas_tiles.items():
             menu, name, place = tile_path.split('-')
             menu_images = self.menu.menu_images.menu_images[menu][name]
@@ -165,8 +184,8 @@ class TileCreator:
                     place = 'top'
                 self.canvas_tiles[loc] = f'{menu}-{name}-{place}'
             tile_surface = self.menu.menu_images.menu_images[menu][name][place]
-            image = tile_surface.surface
 
             x = offset[0] + loc[0] * settings.TILE_SIZE
             y = offset[1] + loc[1] * settings.TILE_SIZE
-            self.display_surface.blit(image, (x, y))
+
+            tile_surface.draw(self.display_surface, (x, y), debug)

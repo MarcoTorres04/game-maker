@@ -1,0 +1,9 @@
+{
+    "water": {
+        "collide": "float",
+        "speed": 0.7
+    },
+    "fire": {
+        "collide": "kill"
+    }
+}
