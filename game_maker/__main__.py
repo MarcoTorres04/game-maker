@@ -21,7 +21,7 @@ class MainLoop:
 
     def run(self):
         while True:
-            dt = self.clock.tick(settings.FPS) / 10
+            dt = self.clock.tick(settings.FPS) / 50
             self.game_maker.run(dt)
             pg.display.flip()
             pg.display.update()

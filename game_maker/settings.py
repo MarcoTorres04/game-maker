@@ -32,6 +32,9 @@ else:
     _asset_path = Path(__file__).parents[1] / 'assets'
 TILES_PATH = _asset_path / 'graphics'
 
+TILES_BG = (0, 85, 115)
+PLAYER_BG = (94, 195, 224)
+
 # Grid
 GRID = True
 GRID_COLOR = (13, 16, 23)
@@ -43,11 +46,31 @@ FONT = 'Arial'
 FONT_SIZE = 15
 
 # Player Stats
-PLAYER_SPEED = 2
+PLAYER_SPEED = 14
+PLAYER_GRAVITY = 0.3
+PLAYER_JUMP = 3.1
+CAMERA_MODE = "center"  # "center" | "box"
+CAMERA_BOX = {
+    "top": 400,
+    "left": 400,
+    "width": 1000,
+    "height": 500
+}
+PLAYER_ANIMATION_SPEED = 0.3
+
+# Game Ui
+PLAY_UI_BG = "black"
+PLAY_UI_FONT_COLOR = "white"
 
 # Screen Animiation
-ANIMATION_SPEED = 5
+ANIMATION_SPEED = 25
 ANIMATION_COLOR = (11, 14, 20)
+
+# Start Menu
+START_MENU_BG = (0, 87, 132)
+START_MENU_TITLE_COLORS = ['crimson', 'orangered', 'coral', 'salmon', 'red']
+START_MENU_SPEED = 0.02
+START_MENU_FONTSIZE = 35
 
 # Debug
 DEBUG = False

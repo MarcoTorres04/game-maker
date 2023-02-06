@@ -12,5 +12,19 @@
             0.5,
             0.5
         ]
+    },
+    "silver_coin": {
+        "collide": "score_2",
+        "hitbox": [
+            0.5,
+            0.5
+        ]
+    },
+    "copper_coin": {
+        "collide": "score_1",
+        "hitbox": [
+            0.5,
+            0.5
+        ]
     }
 }

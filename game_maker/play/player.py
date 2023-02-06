@@ -1,63 +1,69 @@
-import menu
 import pygame as pg
 import settings
 from pygame.key import get_pressed as keys_pressed
 
+from .collider import Collider
 
-class Player:
-    def __init__(self, image: menu.TileSurface, loc: tuple):
-        # Image Surface
+
+class Player(pg.sprite.Sprite):
+    def __init__(self, image: pg.Surface, pos, groups, collision_sprites: pg.sprite.Group, metadata: dict = {}) -> None:
+        super().__init__(groups)
+        self.metadata = metadata
+        hitbox = self.metadata.get('hitbox', [1, 1])
+        size_x = (settings.TILE_SIZE - settings.TILE_SIZE * hitbox[0]) // 2
+        size_y = (settings.TILE_SIZE - settings.TILE_SIZE * hitbox[1]) // 2
         self.image = image
-        self.surface = self.image.surface
-        self.rect = self.surface.get_rect()
-        self.metadata = self.image.metadata
-        self.rect.left = loc[0] * settings.TILE_SIZE
-        self.rect.top = loc[1] * settings.TILE_SIZE
-        if 'hitbox' in self.metadata:
-            hitbox = self.metadata['hitbox']
-            self.inflate_x = self.rect.size[0] - \
-                (self.rect.size[0] * hitbox[0])
-            self.inflate_y = self.rect.size[1] - \
-                (self.rect.size[1] * hitbox[1])
-            self.rect = self.rect.inflate(-self.inflate_x, -self.inflate_y)
-        else:
-            self.inflate_x = 0
-            self.inflate_y = 0
-        # Stats
-        self.speed_value = settings.PLAYER_SPEED
-        self.speed = 0
-        # States
-        self.state = 'idle'
-        self.direction = 'right'
+        self.rect = self.image.get_rect(topleft=pos)
+        self.rect.inflate_ip(-size_x, -size_y)
+
+        self.direction = pg.math.Vector2()
+        self.speed = settings.PLAYER_SPEED
+        self.gravity = settings.PLAYER_GRAVITY
+        self.jump_force = settings.PLAYER_JUMP
         self.can_jump = False
+        self.water_jump = False
 
-    def move_event(self, event: pg.event.Event):
+        self.collider = Collider(self)
+        self.collision_sprites = collision_sprites
 
-        if event.type == pg.KEYDOWN:
-            if event.key == pg.K_LEFT:
-                self.direction = 'left'
-                self.speed -= self.speed_value
-            elif event.key == pg.K_RIGHT:
-                self.direction = 'right'
-                self.speed += self.speed_value
+        self.score = 0
+        self.is_alive = True
+        self.win = False
+        self.state = 'idle'
+        self.dir = 'right'
 
-        elif event.type == pg.KEYUP:
-            if event.key == pg.K_LEFT:
-                self.speed += self.speed_value
-            elif event.key == pg.K_RIGHT:
-                self.speed -= self.speed_value
+    def key_input(self):
+        keys = keys_pressed()
 
-    def move(self, dt: float):
-        self.state = 'run' if self.speed != 0 else 'idle'
-        self.rect.move_ip(self.speed * dt, 0)
+        if keys[pg.K_LEFT]:
+            self.direction.x = -1
+            self.dir = 'left'
+        elif keys[pg.K_RIGHT]:
+            self.direction.x = 1
+            self.dir = 'right'
+        else:
+            self.direction.x = 0
+
+        if keys[pg.K_SPACE] and (self.can_jump or self.water_jump):
+            self.can_jump = False
+            self.direction.y = -self.jump_force
+
+    def fall(self, dt: float):
+        self.direction.y += self.gravity * dt
+        self.rect.y += self.direction.y * self.speed * dt
 
     def update(self, dt: float):
-        """Animate and move player loc"""
-        self.move(dt)
+        self.key_input()
+        self.water_jump = False
+        self.rect.x += self.direction.x * self.speed * dt
+        self.collider.horizontal(self.collision_sprites)
+        self.fall(dt)
+        self.collider.vertical(self.collision_sprites)
 
-    def draw(self, surface: pg.Surface):
-        # left = self.rect.left + self.inflate_x / 2
-        # top = self.rect.top + self.inflate_y / 2
-        # rect = pg.Rect(left, top, self.rect.w, self.rect.h)
-        # pg.draw.rect(surface, 'red', rect, 2)
-        surface.blit(self.surface, self.rect)
+        # States
+        if abs(self.direction.x) < 0.1 and abs(self.direction.y) < 0.1:
+            self.state = 'idle'
+        elif self.direction.x != 0:
+            self.state = 'run'
+        if not self.can_jump and abs(self.direction.y) > 0.3:
+            self.state = 'jump'

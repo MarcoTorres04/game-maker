@@ -1,6 +1,6 @@
 {
     "water": {
-        "collide": "float",
+        "collide": "swim",
         "speed": 0.7
     },
     "fire": {

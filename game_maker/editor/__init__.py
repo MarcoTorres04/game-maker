@@ -1,1 +1,1 @@
-from .e_controller import EditorController
+from .editor_controller import EditorController
