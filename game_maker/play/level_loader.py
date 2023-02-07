@@ -9,6 +9,7 @@ if typing.TYPE_CHECKING:
     from .level import Level
 
 from .animated_player import AnimatedPlayer
+from .animated_tile import AnimatedLevelTile
 from .player import Player
 from .tile import LevelTile
 
@@ -22,6 +23,14 @@ class LevelLoader:
         images_path = settings.TILES_PATH
         player = None
 
+        # Animation Matadata
+        ani_meta_path = images_path / 'animations' / 'animations.json'
+        if ani_meta_path.exists():
+            with open(ani_meta_path, 'r') as ani_file:
+                animation_metadata = json.load(ani_file)
+        else:
+            animation_metadata = {}
+
         for loc, path in canvas.items():
             menu, name, place = path.split('-')
             pos = loc[0] * settings.TILE_SIZE, loc[1] * settings.TILE_SIZE
@@ -34,9 +43,14 @@ class LevelLoader:
 
             if '_ANIMATION' in place:
                 _images = self.get_animated_images(path)
-                _metadata = metadatas.get(menu, {}).get(name, {})
-                player = AnimatedPlayer(_images, pos, [level.draw_sprites,
-                                                       level.update_sprites], level.collision_sprites, _metadata)
+                _metadata = animation_metadata.get(
+                    name, metadatas.get(menu, {}).get(name, {}))
+                if 'player' in menu:
+                    player = AnimatedPlayer(_images, pos, [level.draw_sprites,
+                                                           level.update_sprites], level.collision_sprites, _metadata)
+                else:
+                    AnimatedLevelTile(
+                        _images, pos, [level.draw_sprites, level.update_sprites], _metadata)
                 continue
 
             # Create Tiles

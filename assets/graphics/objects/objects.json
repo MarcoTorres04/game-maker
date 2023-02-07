@@ -3,6 +3,13 @@
         "collide": "win",
         "hitbox": [
             1,
+            1
+        ]
+    },
+    "checkpoint": {
+        "collide": "win",
+        "hitbox": [
+            1,
             0.5
         ]
     },

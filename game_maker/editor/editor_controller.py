@@ -39,9 +39,9 @@ class EditorController:
         # Keyboard
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_LEFT:
-                self.menu.menu_index += 1
-            elif event.key == pg.K_RIGHT:
                 self.menu.menu_index -= 1
+            elif event.key == pg.K_RIGHT:
+                self.menu.menu_index += 1
             self.menu.menu_index %= len(settings.MENU_ITEMS)
             keys = keys_pressed()
             if keys[pg.K_LCTRL] and keys[pg.K_d]:

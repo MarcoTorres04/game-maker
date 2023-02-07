@@ -44,6 +44,7 @@ class MenuImages:
             if not path.is_dir():
                 continue
             menu, name, place = path.stem.split('-')
+            path /= 'idle'
             for image in path.rglob('*.png'):
                 if not menu in self.menu_images:
                     self.menu_images[menu] = {}
@@ -67,4 +68,6 @@ class MenuImages:
                 images_list.append(value['bottom'])
             elif 'unique' in value:
                 images_list.append(value['unique'])
+            elif 'idle' in value:
+                images_list.append(value['idle'])
         return images_list

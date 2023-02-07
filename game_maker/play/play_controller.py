@@ -27,10 +27,13 @@ class PlayController:
         self.level = Level()
         self.player = self.loader(self.level, canvas_map)
         self.level.set_player(self.player)
+        self.win_screen.set_player(self.player)
 
     def run(self, dt: float):
         self.level.update_sprites.update(dt)
         self.drawer()
+        if self.player is None:
+            return
         if not self.player.is_alive:
             self.start_level(self.canvas)
         elif self.player.win:
@@ -39,8 +42,8 @@ class PlayController:
 
     def events(self, event: pg.event.Event):
         # Keyboard
+        keys = keys_pressed()
         if event.type == pg.KEYDOWN:
-            keys = keys_pressed()
 
             if keys[pg.K_ESCAPE]:
                 self.state_machine.pop()
@@ -49,6 +52,10 @@ class PlayController:
             if (keys[pg.K_LCTRL] and keys[pg.K_r]):
                 self.state_machine.pop()
                 return
+
+        elif event.type == pg.KEYUP:
+            if not self.player is None and not keys[pg.K_SPACE]:
+                self.player.jump_press = False
 
         if self.ui.click(event):
             self.state_machine.pop()

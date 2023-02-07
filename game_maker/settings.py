@@ -17,7 +17,7 @@ MENU_COLS = 2
 MENU_ROWS = 3
 MENU_MARGIN = 1
 MENU_SPACING = 16
-MENU_ITEMS = ["terrain", "player", "objects"]
+MENU_ITEMS = ["terrain", "background", "player", "objects"]
 MENU_HL_COLOR = 'gold'
 MENU_HL_ALPHA = 100
 SCROLL_SENS = 1
@@ -46,8 +46,8 @@ FONT = 'Arial'
 FONT_SIZE = 15
 
 # Player Stats
-PLAYER_SPEED = 14
-PLAYER_GRAVITY = 0.3
+PLAYER_SPEED = 18
+PLAYER_GRAVITY = 0.5
 PLAYER_JUMP = 3.1
 CAMERA_MODE = "center"  # "center" | "box"
 CAMERA_BOX = {

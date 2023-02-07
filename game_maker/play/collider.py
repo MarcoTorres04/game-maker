@@ -17,7 +17,8 @@ class Collider:
             "score_3": lambda sprite: self.handler_score(sprite, 3),
             "score_2": lambda sprite: self.handler_score(sprite, 2),
             "score_1": lambda sprite: self.handler_score(sprite, 1),
-            "swim": self.handler_swim
+            "swim": self.handler_swim,
+            "none": lambda sprite: None
         }
 
     def __call__(self, collision_sprites: Group):
@@ -26,7 +27,7 @@ class Collider:
 
     def horizontal(self, collision_sprites: Group):
         for sprite in collision_sprites.sprites():
-            if not sprite.rect.colliderect(self.player.rect):
+            if not sprite.rect.colliderect(self.player.hitbox):
                 continue
 
             collide_effect = sprite.metadata.get('collide', 'solid')
@@ -37,7 +38,7 @@ class Collider:
 
     def vertical(self, collision_sprites: Group):
         for sprite in collision_sprites.sprites():
-            if not sprite.rect.colliderect(self.player.rect):
+            if not sprite.rect.colliderect(self.player.hitbox):
                 continue
             collide_effect = sprite.metadata.get('collide', 'solid')
             if collide_effect == 'solid':
@@ -47,24 +48,26 @@ class Collider:
 
         if self.player.can_jump and self.player.direction.y != 0:
             self.player.can_jump = False
+            self.player.can_double_jump = True
 
     def horizontal_solid_collide(self, sprite: pg.sprite):
         #  <- Left
         if self.player.direction.x < 0:
-            self.player.rect.left = sprite.rect.right
+            self.player.hitbox.left = sprite.rect.right
         # -> Right
         elif self.player.direction.x > 0:
-            self.player.rect.right = sprite.rect.left
+            self.player.hitbox.right = sprite.rect.left
 
     def vertical_solid_collide(self, sprite: pg.sprite):
         # ^ Up
         if self.player.direction.y < 0:
-            self.player.rect.top = sprite.rect.bottom
+            self.player.hitbox.top = sprite.rect.bottom
         # v Down
         elif self.player.direction.y > 0:
-            self.player.rect.bottom = sprite.rect.top
+            self.player.hitbox.bottom = sprite.rect.top
             self.player.direction.y = 0
             self.player.can_jump = True
+            self.player.can_double_jump = False
 
     def handler_kill(self, sprite: pg.sprite.Sprite):
         self.player.is_alive = False
@@ -77,4 +80,5 @@ class Collider:
         sprite.kill()
 
     def handler_swim(self, sprite: pg.sprite.Sprite):
+        self.player.water_force = sprite.metadata.get("speed", 1)
         self.player.water_jump = True

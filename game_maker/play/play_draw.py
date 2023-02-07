@@ -19,6 +19,12 @@ class PlayDrawer:
         self.play.ui.draw('play')
         if self.play.player is None:
             return
+        # rect = self.play.player.hitbox.copy()
+        # rect.topleft -= self.play.level.draw_sprites.offset
+        # rect2 = self.play.player.rect.copy()
+        # rect2.topleft -= self.play.level.draw_sprites.offset
+        # pg.draw.rect(self.display_surface, 'green', rect, 2)
+        # pg.draw.rect(self.display_surface, 'red', rect2, 2)
         self.show_score()
 
     def show_score(self):

@@ -62,6 +62,9 @@ class Canvas:
             self.delete_unique()
             self.canvas_tiles[nbrs['loc']] = cell_name
             return
+        elif 'idle' in place:
+            self.canvas_tiles[nbrs['loc']] = cell_name
+            return
         if not any(
                 map(lambda cell: cell in self.canvas_tiles,
                     list(nbrs.values())[:-1])):
@@ -74,7 +77,7 @@ class Canvas:
                     nbrs: dict,
                     review_nbrs: bool = False):
         menu, name, place = cell_name.split('-')
-        if 'unique' in place:
+        if 'unique' in place or 'idle' in place:
             return
         if self.is_top(cell_name, nbrs):
             place = 'top'

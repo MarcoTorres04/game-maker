@@ -12,6 +12,9 @@ class WinScreen:
         self.font = pg.font.SysFont(
             settings.FONT, settings.START_MENU_FONTSIZE * 2)
 
+    def set_player(self, player):
+        self.player = player
+
     def input(self):
         keys = keys_pressed()
         mouse = mouse_pressed()
@@ -30,6 +33,13 @@ class WinScreen:
                                 settings.START_MENU_BG)
         rect = text.get_rect()
         rect.center = settings.WINDOW_WIDTH // 2, settings.WINDOW_HEIGHT // 2
+        self.display_surface.blit(text, rect)
+        # Score
+        string = f"Score: {self.player.score}"
+        text = self.font.render(string, True, 'Crimson',
+                                settings.START_MENU_BG)
+        rect = text.get_rect()
+        rect.center = settings.WINDOW_WIDTH // 2, settings.WINDOW_HEIGHT // 1.5
         self.display_surface.blit(text, rect)
 
     def loop(self, dt: float):
