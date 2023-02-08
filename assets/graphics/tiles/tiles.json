@@ -1,0 +1,12 @@
+{
+    "water": {
+        "collide": "swim",
+        "speed": 0.7,
+        "animated": [
+            "top"
+        ]
+    },
+    "fire": {
+        "collide": "kill"
+    }
+}

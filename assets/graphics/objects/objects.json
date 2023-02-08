@@ -13,25 +13,44 @@
             0.5
         ]
     },
-    "gold_coin": {
+    "apple": {
         "collide": "score_3",
         "hitbox": [
             0.5,
             0.5
-        ]
+        ],
+        "animated": [
+            "idle"
+        ],
+        "animation_speed": 0.2
     },
-    "silver_coin": {
+    "cherry": {
         "collide": "score_2",
         "hitbox": [
             0.5,
             0.5
-        ]
+        ],
+        "animated": [
+            "idle"
+        ],
+        "animation_speed": 0.2
     },
-    "copper_coin": {
+    "orange": {
         "collide": "score_1",
         "hitbox": [
             0.5,
             0.5
-        ]
+        ],
+        "animated": [
+            "idle"
+        ],
+        "animation_speed": 0.2
+    },
+    "flower": {
+        "animation_speed": 0.15,
+        "animated": [
+            "idle"
+        ],
+        "collide": "none"
     }
 }

@@ -8,6 +8,8 @@ from pygame.image import load as load_image
 if typing.TYPE_CHECKING:
     from .level import Level
 
+from assets_loader import Asset
+
 from .animated_player import AnimatedPlayer
 from .animated_tile import AnimatedLevelTile
 from .player import Player
@@ -18,67 +20,33 @@ class LevelLoader:
     def __init__(self):
         self.display_surface = pg.display.get_surface()
 
-    def __call__(self, level: 'Level', canvas: dict[tuple[int, int], str]) -> Player:
-        metadatas = {}
-        images_path = settings.TILES_PATH
+    def __call__(self, level: 'Level', canvas: dict[tuple[int, int], str], assets: dict) -> Player:
         player = None
-
-        # Animation Matadata
-        ani_meta_path = images_path / 'animations' / 'animations.json'
-        if ani_meta_path.exists():
-            with open(ani_meta_path, 'r') as ani_file:
-                animation_metadata = json.load(ani_file)
-        else:
-            animation_metadata = {}
-
         for loc, path in canvas.items():
-            menu, name, place = path.split('-')
-            pos = loc[0] * settings.TILE_SIZE, loc[1] * settings.TILE_SIZE
+            menu, name, state = path.split('-')
+            images = assets[menu][name]
 
-            # Load Metadata File
-            metadata_path = images_path / menu / f'{menu}.json'
-            if not menu in metadatas and metadata_path.exists():
-                with open(metadata_path, 'r') as json_file:
-                    metadatas[menu] = json.load(json_file)
+            x = loc[0] * settings.TILE_SIZE
+            y = loc[1] * settings.TILE_SIZE
 
-            if '_ANIMATION' in place:
-                _images = self.get_animated_images(path)
-                _metadata = animation_metadata.get(
-                    name, metadatas.get(menu, {}).get(name, {}))
-                if 'player' in menu:
-                    player = AnimatedPlayer(_images, pos, [level.draw_sprites,
-                                                           level.update_sprites], level.collision_sprites, _metadata)
-                else:
-                    AnimatedLevelTile(
-                        _images, pos, [level.draw_sprites, level.update_sprites], _metadata)
+            # Search Player
+            if 'player' in path:
+                groups = [level.draw_sprites, level.update_sprites]
+                player = AnimatedPlayer(
+                    images, (x, y), groups, level.collision_sprites)
                 continue
 
-            # Create Tiles
-            if (images_path / menu / name).is_dir():
-                image_folder = images_path / menu / name
-            else:
-                image_folder = images_path / menu
-            image_path = image_folder / f'{name}-{place}.png'
-            if not image_path.exists():
-                image_path = image_folder / f'{name}.png'
-            # Detect Player
-            _metadata = metadatas.get(menu, {}).get(name, {})
-            image = load_image(image_path)
-            if 'player' in name:
-                player = Player(image, pos, [level.draw_sprites,
-                                             level.update_sprites], level.collision_sprites, _metadata)
-            else:
-                LevelTile(image, pos, [level.draw_sprites,
-                          level.collision_sprites], _metadata)
-        return player
+            _meta = assets[menu]['metadata']
 
-    def get_animated_images(self, path: str) -> dict:
-        path = path.replace('_ANIMATION', '')
-        animations_folder = settings.TILES_PATH / 'animations' / path
-        images = {}
-        for state in animations_folder.glob('*'):
-            if not state.stem in images:
-                images[state.stem] = []
-            for image_path in state.glob('*.png'):
-                images[state.stem].append(load_image(image_path))
-        return images
+            if state in _meta.get(name, {}).get('animated', []):
+                # Animated Tile
+                groups = [level.draw_sprites,
+                          level.update_sprites, level.collision_sprites]
+                AnimatedLevelTile(images, (x, y), groups)
+                continue
+
+            image = assets[menu][name][state][0]
+            groups = [level.draw_sprites, level.collision_sprites]
+            LevelTile(image, (x, y), groups)
+
+        return player

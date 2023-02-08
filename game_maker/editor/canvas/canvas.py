@@ -14,6 +14,7 @@ class Canvas:
         self.display_surface = pg.display.get_surface()
         self.menu = editor_menu
         self.canvas_tiles: dict[tuple, str] = {}
+        self.assets = self.menu.assets
 
     def get_grid_cell(self, pan_center: Vector2):  # -> tuple[int, int]:
         """Cell position in grid"""
@@ -37,15 +38,15 @@ class Canvas:
         current_cell = self.get_grid_cell(pan_center)
         if not settings.OVERRIDE_CELL and current_cell in self.canvas_tiles:
             return
-        cell_name: str = list(
-            self.menu.buttons)[self.menu.selected_item].current_tile.path
-        menu, name, _ = cell_name.split('-')
-        if current_cell in self.canvas_tiles:
-            c_menu, c_name, _ = self.canvas_tiles[current_cell].split('-')
-            if c_menu == menu and c_name == name:
-                return
+
+        item = self.menu.images_list[self.menu.selected_item]
+        menu, name, _ = item.path.split('-')
+
+        if current_cell in self.canvas_tiles and item == self.canvas_tiles[current_cell]:
+            return
+
         neighbors = self.get_neighbors_locs(current_cell)
-        self.review_locs(cell_name, neighbors)
+        self.review_locs(item.path, neighbors)
 
     def remove_tile(self, pan_center: Vector2):
         """Remove tile"""
@@ -58,7 +59,7 @@ class Canvas:
 
     def review_locs(self, cell_name: str, nbrs: dict):
         menu, name, place = cell_name.split('-')
-        if 'unique' in place:
+        if 'player' in menu:
             self.delete_unique()
             self.canvas_tiles[nbrs['loc']] = cell_name
             return
@@ -164,7 +165,7 @@ class Canvas:
     def delete_unique(self):
         locs = []
         for loc, cell in self.canvas_tiles.items():
-            if 'unique' in cell:
+            if 'player' in cell:
                 locs.append(loc)
         for loc in locs:
             self.canvas_tiles.pop(loc)
@@ -177,23 +178,23 @@ class Canvas:
             self.remove_tile(pan_center)
 
     def draw(self, offset: Vector2, debug: bool):
-        for loc, tile_path in self.canvas_tiles.items():
-            menu, name, place = tile_path.split('-')
-            menu_images = self.menu.menu_images.menu_images[menu][name]
+        for loc, asset in self.canvas_tiles.items():
+            menu, name, place = asset.split('-')
+            images = self.menu.assets[menu][name]
             place = place.replace('_ANIMATION', '')
-            if not place in menu_images:
+            if not place in images:
                 if 'top' in place or 'alone' in place:
                     place = 'top'
-                elif 'bottom' in place and 'bottom' in menu_images:
+                elif 'bottom' in place and 'bottom' in images:
                     place = 'bottom'
-                elif 'middle' in menu_images:
+                elif 'middle' in images:
                     place = 'middle'
                 else:
                     place = 'top'
                 self.canvas_tiles[loc] = f'{menu}-{name}-{place}'
-            tile_surface = self.menu.menu_images.menu_images[menu][name][place]
+            surface = self.menu.assets[menu][name][place][0]
 
             x = offset[0] + loc[0] * settings.TILE_SIZE
             y = offset[1] + loc[1] * settings.TILE_SIZE
 
-            tile_surface.draw_edit(self.display_surface, (x, y), debug)
+            surface.draw_edit(self.display_surface, (x, y), debug)

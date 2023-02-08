@@ -7,17 +7,20 @@ import tools
 from pygame.key import get_pressed as keys_pressed
 import start
 import animations
+import assets_loader
 
 
 class GameMaker:
     def __init__(self):
         self.display_surface = pg.display.get_surface()
         self.ui = tools.Ui()
+        self.assets = assets_loader.AssetsLoader()()
         self.state_machine = state_machine.StateMachine()
         self.state_machine.push('start_menu')
-        self.editor = editor.EditorController(self, self.state_machine)
+        self.editor = editor.EditorController(
+            self, self.state_machine, self.assets)
         self.play = play.PlayController(
-            self, self.state_machine, self.editor.canvas.canvas_tiles)
+            self, self.state_machine, self.editor.canvas.canvas_tiles, self.assets)
         self.start = start.StartMenu(self.state_machine)
         self.animation = animations.ScreenAnimation(self.state_machine)
 
@@ -67,6 +70,6 @@ class GameMaker:
         self.start.draw()
 
     def active_play(self, dt: float):
-        self.play.start_level(self.editor.canvas.canvas_tiles.copy())
+        self.play.start_level()
         self.state_machine.pop()
         self.state_machine.push('animate')

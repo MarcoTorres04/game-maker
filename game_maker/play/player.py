@@ -3,18 +3,19 @@ import settings
 from pygame.key import get_pressed as keys_pressed
 
 from .collider import Collider
+from assets_loader import Asset
 
 
 class Player(pg.sprite.Sprite):
-    def __init__(self, image: pg.Surface, pos, groups, collision_sprites: pg.sprite.Group, metadata: dict = {}) -> None:
+    def __init__(self, image: Asset, pos, groups, collision_sprites: pg.sprite.Group) -> None:
         super().__init__(groups)
-        self.metadata = metadata
+        self.metadata = image.metadata
         hitbox = self.metadata.get('hitbox', [1, 1])
 
         size_x = (settings.TILE_SIZE - settings.TILE_SIZE * hitbox[0]) // 2
         size_y = (settings.TILE_SIZE - settings.TILE_SIZE * hitbox[1]) // 2
 
-        self.image = image
+        self.image = image.surface
         self.rect = self.image.get_rect(topleft=pos)
 
         left = self.rect.left + size_x

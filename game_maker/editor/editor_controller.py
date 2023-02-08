@@ -16,13 +16,16 @@ if typing.TYPE_CHECKING:
 
 
 class EditorController:
-    def __init__(self, game_maker: 'GameMaker', state_machine: sm.StateMachine):
+    def __init__(self, game_maker: 'GameMaker', state_machine: sm.StateMachine, assets: dict):
         # Game Maker
         self.game_maker = game_maker
         self.state_machine = state_machine
+        # Assets
+        self.assets = assets
         # Menu
-        self.menu_images = menu.MenuImages()
-        self.menu = menu.Menu(self.menu_images)
+        # self.menu_images = menu.MenuImages()
+        # self.menu = menu.Menu(self.menu_images)
+        self.menu = menu.Menu(self.assets)
         # Tools
         self.ui = self.game_maker.ui
         self.grid = tools.GridTool()

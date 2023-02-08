@@ -1,9 +1,0 @@
-{
-    "water": {
-        "collide": "swim",
-        "speed": 0.7
-    },
-    "fire": {
-        "collide": "kill"
-    }
-}

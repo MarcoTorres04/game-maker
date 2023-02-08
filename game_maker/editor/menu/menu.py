@@ -2,22 +2,21 @@ import pygame
 import settings
 
 from pygame.mouse import get_pressed, get_pos
-from .menu_images import MenuImages
 from .button import Button
 
 
 class Menu:
-    def __init__(self, menu_images: MenuImages):
+    # def __init__(self, menu_images: MenuImages):
+    def __init__(self, assets: dict):
         self.display_surface = pygame.display.get_surface()
         # Buttons
         self.create_menu_space()
         self.create_buttons()
         # Menu Selection
         self.menu_index = 0
-        self.menu_images = menu_images
+        self.assets = assets
         self.selected_item = 0
         # Scroll
-        self.__last_scroll_index = 0
         self.scroll_index_raw = 0
         self.scroll_index = 0
 
@@ -48,10 +47,23 @@ class Menu:
 
     def draw_buttons(self):
         menu = settings.MENU_ITEMS[self.menu_index]
-        images = self.menu_images(menu)
+        images: dict = self.assets[menu]
+        self.images_list = []
+        for key, value in images.items():
+            if key == 'metadata':
+                continue
+            for state in ['alone', 'top', 'idle']:
+                if not state in value:
+                    continue
+                if isinstance(value[state], list):
+                    self.images_list.append(value[state][0])
+                    break
+                self.images_list.append(value[state])
+                break
+
         self.scroll_index = min(self.scroll_index,
-                                len(images) - (len(images) % 2))
-        images = images[self.scroll_index:]
+                                len(self.images_list) - (len(self.images_list) % 2))
+        images = self.images_list[self.scroll_index:]
         self.buttons.update(images)
         self.buttons.draw(self.display_surface)
         self.highlight_selected()
@@ -59,10 +71,8 @@ class Menu:
     def highlight_selected(self):
         if self.selected_item is None:
             return
-        menu = settings.MENU_ITEMS[self.menu_index]
-        images = self.menu_images.menu_images[menu]
         self.selected_item = 0 if len(
-            images) <= self.selected_item else self.selected_item
+            self.images_list) <= self.selected_item else self.selected_item
         button: Button = list(self.buttons)[self.selected_item]
         rect = button.rect
         x = rect.left
@@ -85,7 +95,7 @@ class Menu:
         for idx, button in enumerate(self.buttons):
             if button.rect.collidepoint(mouse):
                 self.selected_item = idx if idx <= len(
-                    self.menu_images.menu_images[menu]
+                    self.images_list
                 ) - 1 else self.selected_item
                 return
 
@@ -97,8 +107,6 @@ class Menu:
         self.scroll_index_raw = max(0, self.scroll_index_raw)
         self.scroll_index = int(self.scroll_index_raw) + \
             (int(self.scroll_index_raw) % 2)
-        if self.__last_scroll_index != self.scroll_index:
-            self.selected_item = None
 
     def draw(self):
         self.menu_surface.fill(settings.MENU_BG)

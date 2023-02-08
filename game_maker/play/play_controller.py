@@ -14,18 +14,19 @@ if typing.TYPE_CHECKING:
 
 
 class PlayController:
-    def __init__(self, game_maker: 'GameMaker', state_machine: StateMachine, canvas: dict):
+    def __init__(self, game_maker: 'GameMaker', state_machine: StateMachine, canvas: dict, assets: dict):
         self.game_maker = game_maker
         self.ui = self.game_maker.ui
         self.drawer = PlayDrawer(self)
-        self.loader = LevelLoader()
         self.state_machine = state_machine
+        self.level_loader = LevelLoader()
         self.win_screen = WinScreen(self.state_machine)
         self.canvas = canvas
+        self.assets = assets
 
-    def start_level(self, canvas_map: dict):
+    def start_level(self):
         self.level = Level()
-        self.player = self.loader(self.level, canvas_map)
+        self.player = self.level_loader(self.level, self.canvas, self.assets)
         self.level.set_player(self.player)
         self.win_screen.set_player(self.player)
 

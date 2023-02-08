@@ -1,0 +1,16 @@
+{
+    "virtual_guy": {
+        "hitbox": [
+            0.60,
+            0.80
+        ],
+        "animation_speed": 0.5
+    },
+    "dark_one": {
+        "hitbox": [
+            0.5,
+            1
+        ],
+        "animation_speed": 0.6
+    }
+}
