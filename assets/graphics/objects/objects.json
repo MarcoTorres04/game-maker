@@ -2,8 +2,8 @@
     "goal": {
         "collide": "win",
         "hitbox": [
-            1,
-            1
+            0.8,
+            0.6
         ]
     },
     "checkpoint": {

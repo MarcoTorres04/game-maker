@@ -1,14 +1,10 @@
-import json
 import typing
 
 import pygame as pg
 import settings
-from pygame.image import load as load_image
 
 if typing.TYPE_CHECKING:
     from .level import Level
-
-from assets_loader import Asset
 
 from .animated_player import AnimatedPlayer
 from .animated_tile import AnimatedLevelTile
@@ -23,6 +19,10 @@ class LevelLoader:
     def __call__(self, level: 'Level', canvas: dict[tuple[int, int], str], assets: dict) -> Player:
         player = None
         for loc, path in canvas.items():
+
+            # Update Dead Level
+            level.dead_level = max(level.dead_level, loc[1])
+
             menu, name, state = path.split('-')
             images = assets[menu][name]
 
@@ -49,4 +49,6 @@ class LevelLoader:
             groups = [level.draw_sprites, level.collision_sprites]
             LevelTile(image, (x, y), groups)
 
+        level.dead_level = (level.dead_level +
+                            settings.DEAD_LEVEL) * settings.TILE_SIZE
         return player

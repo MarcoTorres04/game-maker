@@ -28,6 +28,7 @@ class PlayController:
         self.level = Level()
         self.player = self.level_loader(self.level, self.canvas, self.assets)
         self.level.set_player(self.player)
+        self.level.set_dead_line()
         self.win_screen.set_player(self.player)
 
     def run(self, dt: float):
@@ -36,10 +37,12 @@ class PlayController:
         if self.player is None:
             return
         if not self.player.is_alive:
-            self.start_level(self.canvas)
+            self.start_level()
         elif self.player.win:
             self.state_machine.pop()
             self.state_machine.push('win')
+        elif self.player.hitbox.bottom > self.level.dead_level:
+            self.player.is_alive = False
 
     def events(self, event: pg.event.Event):
         # Keyboard

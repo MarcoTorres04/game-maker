@@ -6,11 +6,11 @@
         ],
         "animation_speed": 0.5
     },
-    "dark_one": {
+    "ninja_frog": {
         "hitbox": [
-            0.5,
-            1
+            0.60,
+            0.80
         ],
-        "animation_speed": 0.6
+        "animation_speed": 0.5
     }
 }

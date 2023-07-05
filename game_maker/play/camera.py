@@ -10,6 +10,7 @@ class Camera(pg.sprite.Group):
         self.display_surface = pg.display.get_surface()
         self.offset = pg.math.Vector2(0, 0)
         self.player = None
+        self.dead_line = 0
 
         if settings.CAMERA_MODE == 'center':
             self.setup_center_camera()
@@ -21,6 +22,10 @@ class Camera(pg.sprite.Group):
     def track_player(self, player: Player):
         """Add Player"""
         self.player = player
+
+    def set_dead_line(self, dead_line: float):
+        """Add Dead Line"""
+        self.dead_line = dead_line
 
     def setup_center_camera(self):
         """Player Always in Center"""
@@ -65,3 +70,10 @@ class Camera(pg.sprite.Group):
         for sprite in self.sprites():
             pos = sprite.rect.topleft - self.offset
             self.display_surface.blit(sprite.image, pos)
+
+        if not settings.SHOW_DEAD_LEVEL:
+            return
+        start_pos = (0, self.dead_line - self.offset[1])
+        end_pos = (settings.WINDOW_WIDTH, self.dead_line - self.offset[1])
+        pg.draw.line(self.display_surface,
+                     settings.DEAD_LEVEL_COLOR, start_pos, end_pos)

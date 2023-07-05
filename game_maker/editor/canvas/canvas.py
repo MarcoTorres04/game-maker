@@ -40,7 +40,6 @@ class Canvas:
             return
 
         item = self.menu.images_list[self.menu.selected_item]
-        menu, name, _ = item.path.split('-')
 
         if current_cell in self.canvas_tiles and item == self.canvas_tiles[current_cell]:
             return

@@ -11,17 +11,18 @@ class Ui:
         # Play button
         self.images = {
             "edit": load(str(ui_path / 'play.png')),
-            "play": load(str(ui_path / 'pause.png'))
+            "edit-hover": load(str(ui_path / 'play-hover.png')),
+            "play": load(str(ui_path / 'pause.png')),
+            "play-hover": load(str(ui_path / 'pause-hover.png'))
         }
         self.rect = self.images['edit'].get_rect()
-        self.rect.topleft = 0, settings.WINDOW_HEIGHT - settings.TILE_SIZE
+        self.rect.topleft = settings.TILE_SIZE // 8, settings.WINDOW_HEIGHT - \
+            settings.TILE_SIZE
 
-    def hover(self):
+    def hover(self) -> bool:
         if not self.rect.collidepoint(get_pos()):
-            return
-        surface = pygame.Surface(self.rect.size)
-        surface.fill('gold')
-        return surface
+            return False
+        return True
 
     def click(self, event: pygame.event.Event) -> bool:
         if event.type != pygame.MOUSEBUTTONDOWN:
@@ -31,9 +32,8 @@ class Ui:
         return self.rect.collidepoint(get_pos())
 
     def draw(self, mode: str):
-        hover_surface = self.hover()
-        if not hover_surface is None:
-            self.display_surface.blit(hover_surface, self.rect.topleft)
+        if self.hover():
+            mode = f'{mode}-hover'
         self.display_surface.blit(self.images[mode], self.rect.topleft)
 
     def collide(self, pos: tuple) -> bool:
