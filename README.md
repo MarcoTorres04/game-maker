@@ -4,6 +4,8 @@
 
 Juego inspirado en mario maker hecho con pygame-ce
 
+[Assets usados](https://pixelfrog-assets.itch.io/pixel-adventure-1)
+
 ## Instalación de requisitos
 
 ```bash
